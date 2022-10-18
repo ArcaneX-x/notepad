@@ -1,30 +1,33 @@
-# encoding: utf-8
-#
-# Программа «Блокнот», заготовка с классами
-#
-# (с) rubyrush.ru
-#
-# Подключим встроенный в руби класс Date для работы с датами
 require 'date'
 
-# Класс «Задача», разновидность базового класса «Запись»
 class Task < Post
-  # Конструктор у класса «Задача» свой, но использует конструктор родителя.
   def initialize
-    # Вызываем конструктор родителя
     super
 
-    # Создаем специфичную для ссылки переменную экземпляра @due_date — время, к
-    # которому задачу нужно выполнить
     @due_date = Time.now
   end
 
-  # Этот метод пока пустой, он будет спрашивать ввод содержимого Задача
   def read_from_console
+    puts 'What do you need to do?'
+    @text = $stdin.gets.chomp
+    puts 'Until which date? Format: DD.MM.YY'
+    input = $stdin.gets.chomp
+    @due_date = Date.parse(input)
   end
 
-  # Этот метод будет возвращать массив из трех строк: дедлайн задачи, описание
-  # и дата создания
   def to_strings
+    deadline = "Due date: #{@due_date.strftime('%Y.%m.%d')}"
+    time_string = "Created: #{@created_at.strftime('%Y.%m.%d, %H:%M:%S')} \n"
+
+    [deadline, @text, time_string]
+  end
+
+  def to_db_hash
+    super.merge('text' => @text, 'due_date' => @due_date.to_s)
+  end
+
+  def load_data(data_hash)
+    super
+    @due_date = Date.parse(data_hash['due_date'])
   end
 end

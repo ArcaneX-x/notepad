@@ -1,19 +1,25 @@
-# encoding: utf-8
-#
-# Программа «Блокнот», заготовка с классами
-#
-# (с) rubyrush.ru
-#
-# Класс «Заметка», разновидность базового класса «Запись»
 class Memo < Post
-  # Отдельный конструктор здесь не нужен, т. к. у заметки нет дополнительных
-  # переменных экземпляра.
-
-  # Этот метод пока пустой, он будет спрашивать ввод содержимого Заметки
   def read_from_console
+    puts 'New note (Write lines. To stop write "end"):'
+    line = nil
+    until line == 'end'
+      line = $stdin.gets.chomp
+      @text << line
+    end
+    @text.pop
   end
 
-  # Этот метод будет возвращать массив из строк заметки + строка-дата создания
   def to_strings
+    time_string = "Created: #{@created_at.strftime('%Y.%m.%d, %H:%M:%S')}\n"
+    @text.unshift(time_string)
+  end
+
+  def to_db_hash
+    super.merge('text' => @text.join('\n'))
+  end
+
+  def load_data(data_hash)
+    super
+    @text = data_hash['text'].split('\n')
   end
 end

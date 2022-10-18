@@ -1,27 +1,27 @@
-# encoding: utf-8
-#
-# Программа «Блокнот», заготовка с классами
-#
-# (с) rubyrush.ru
-#
-# Класс «Ссылка», разновидность базового класса «Запись»
 class Link < Post
-  # Конструктор у класса «Ссылка» свой, но использует конструктор родителя.
   def initialize
-    # Вызываем конструктор родителя
     super
-
-    # Создаем специфичную для ссылки переменную экземпляра @url — адрес, куда
-    # будет вести ссылка.
     @url = ''
   end
 
-  # Этот метод пока пустой, он будет спрашивать ввод содержимого Ссылки
   def read_from_console
+    puts 'Address (url):'
+    @url = $stdin.gets.chomp
+    puts 'What a name of the link?'
+    @text = $stdin.gets.chomp
   end
 
-  # Этот метод будет возвращать массив из трех строк: адрес ссылки, описание
-  # и дата создания
   def to_strings
+    time_string = "Created: #{@created_at.strftime('%Y.%m.%d, %H:%M:%S')} \n"
+    [@url, @text, time_string]
+  end
+
+  def to_db_hash
+    super.merge('text' => @text, 'url' => @url)
+  end
+
+  def load_data(data_hash)
+    super
+    @url = data_hash['url']
   end
 end
